@@ -11,8 +11,20 @@ Req Fields: eid,ename.esal,location
 Access type: Public
 Note: we nwwd to varify if employee exist or not if not we will create now employee
 */
-router.post('/create',(req,res)=>{
-    let emp = req.body;
+router.post('/create', async(req,res)=>{
+    let employee = req.body;
+    console.log(employee);
+    let employees = await getEmployees()
+    let emp_obj = employees.find((emp)=>{
+        return emp.eid == employee.eid
+    })
+    if(emp_obj){
+        return res.status(401).json({ "msg":"Employee alrady exist"})
+    }
+    employees.push(employee)
+    saveEmp(employees)
+    return res.json({"msg":"Employee has been created"})
+    
 })
 /*
 Usage: Read emploee
@@ -53,9 +65,12 @@ router.delete('/delete/:id',(req,res)=>{
 
 
 let getEmployees = ()=>{
-    let emp_Data = fs.readFileSync(path.join(process.cwd(),"data","test.json"),'utf-8',(err)=>{
+    let emp_Data = fs.readFileSync(path.join(process.cwd(),"data","data.json"),'utf-8',(err)=>{
         if(err) throw err
     })
     return JSON.parse(emp_Data)
+}
+let saveEmp = ( employees )=>{
+    fs.writeFileSync(path.join(process.cwd(),"data","data.json"),JSON.stringify(employees))
 }
 export default router;

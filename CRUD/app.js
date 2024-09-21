@@ -11,6 +11,7 @@ let port = process.env.PORT;
 let host = process.env.HOSTNAME;
 
 
+app.use(express.json())
 app.get('/',(req,res)=>{    
     res.send("Root request")
 })
