@@ -47,8 +47,22 @@ Req Fields: NONE
 Access type: Public
 Note: 
 */
-router.put('/update/:id',(req,res)=>{
-    let eid = req.params.id
+router.put('/update/:eid', async(req,res)=>{
+    let emp_Id = req.params.eid
+    let employee = req.body;
+    let employees = await getEmployees();
+    let emp_Data = employees.find((emp)=>{
+        return emp.eid == emp_Id;
+    })
+    if(!emp_Data){
+        return res.status(401).json({"msg":"Employee doesn't exist"})
+    }
+    let rem_Employee = employees.filter((emp)=>{
+        return emp.eid != emp_Id
+    })
+    rem_Employee.unshift(employee);
+    saveEmp(rem_Employee)
+    return res.status(200).json({"msg":"Employee has been updated"})
 
 })
 /*
@@ -59,9 +73,23 @@ Req Fields: NONE
 Access type: Public
 Note: first varify if employee exist or not if yes then delete it
 */
-router.delete('/delete/:id',(req,res)=>{
-    let eid= req.params.id
-})
+router.delete('/del/:eid', async (req, res) => {
+    let emp_Id = req.params.eid
+    let employees = await getEmployees();
+    let emp_Data = employees.find((emp)=>{
+        return emp.eid == emp_Id;
+    })
+    console.log(emp_Data)
+    if(!emp_Data){
+        return res.status(401).json({"msg":"Employee doesn't exist"})
+    }
+    let rem_Employee = employees.filter((emp)=>{
+        return emp.eid != emp_Id
+    })
+    saveEmp(rem_Employee)
+    return res.status(200).json({"msg":"Employee has been Deleted"})
+});
+
 
 
 let getEmployees = ()=>{

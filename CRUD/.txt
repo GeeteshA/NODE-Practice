@@ -1,0 +1,5 @@
+MongiDB Methods=
+save()
+find()
+findByIdAndUpdate()
+findByIdAndDelete()
